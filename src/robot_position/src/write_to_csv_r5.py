@@ -25,7 +25,7 @@ class Robot_position:
         self.imu_sub = message_filters.Subscriber('/robot1/imu', Imu)
         self.subs = message_filters.ApproximateTimeSynchronizer([self.us1_sub, self.us2_sub, self.us3_sub, self.us4_sub, self.us5_sub, self.us6_sub, self.imu_sub], queue_size = 1, slop = 0.9, allow_headerless=True)
         self.subs.registerCallback(self.sensor_cb)
-        self.positions_file = open('robot1_positions.csv', mode = 'w')
+        self.positions_file = open('robot5_positions.csv', mode = 'w')
         self.positions_writer = csv.writer(self.positions_file, delimiter=',')
         self.reset_counter = 0
         self.write_to_csv_counter = 0
