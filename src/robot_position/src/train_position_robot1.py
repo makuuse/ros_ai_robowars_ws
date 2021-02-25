@@ -6,9 +6,9 @@ import tensorflow as tf
 from tensorflow import keras  #Abstraktiokerros?
 from tensorflow.keras import layers
 
-train_dataset_path = 'robot1_positions.csv'
-test_dataset_path = 'robot1_positions.csv'
-validation_dataset_path = 'robot1_positions.csv'
+train_dataset_path = 'robot1_positions1.csv'
+test_dataset_path = 'robot1_positions2.csv'
+validation_dataset_path = 'robot1_positions3.csv'
 
 # CSV-tiedoston sarakkeiden otsikot...
 column_names = ['yaw_radians', 'us1', 'us2', 'us3', 'us4', 'us5', 'us6', 'ground_truth_x', 'ground_truth_y']
@@ -70,6 +70,6 @@ for x in range(50):
     print("Testing set Mean Abs error: {:5.2f} position".format(mae))
     if mae < last_mae:
         print("saving model...")
-        model_save_path = "saved_model/robot1_model" + str(x*10 + "epochs")
+        model_save_path = "saved_model/robot1_model" + str(x*10) + "epochs"
         model.save(model_save_path) # Tallennetaan malli
 
