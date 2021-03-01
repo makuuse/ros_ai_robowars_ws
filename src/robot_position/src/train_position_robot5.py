@@ -2,14 +2,10 @@
 
 import numpy as np
 import pandas as pd
+pd.options.display.float_format = '{:.6f}'.format
 import tensorflow as tf
 from tensorflow import keras  #Abstraktiokerros?
 from tensorflow.keras import layers
-
-def sanitize(data):
-    valid = '1234567890.'
-    return float(''.join(filter(lambda char: char in valid, data)))
-
 
 train_dataset_path = 'robot5_positions1.csv'
 test_dataset_path = 'robot5_positions2.csv'
@@ -22,15 +18,16 @@ raw_train_dataset = pd.read_csv(train_dataset_path, names = column_names) # Data
 raw_train_dataset['lidar1_ranges'] = raw_train_dataset['lidar1_ranges'].str.replace('(', '', regex = True)
 raw_train_dataset['lidar1_ranges'] = raw_train_dataset['lidar1_ranges'].str.replace(')', '', regex = True)
 raw_train_dataset = pd.concat([raw_train_dataset['yaw_radians'], 
-                                raw_train_dataset['lidar1_ranges'].str.split(',').apply(pd.Series).astype(float), 
-                                raw_train_dataset['ground_truth_x'], 
-                                raw_train_dataset['ground_truth_y']], 
-                                axis = 1)
+                               raw_train_dataset['lidar1_ranges'].str.split(',').apply(pd.Series).astype(float), 
+                               raw_train_dataset['ground_truth_x'], 
+                               raw_train_dataset['ground_truth_y']], 
+                               axis = 1)
 train_dataset = raw_train_dataset.copy() # Jätetään "raaka datasetti" erilleen.... Jos sitä pitää muokata tms?
 train_label_x = train_dataset.pop('ground_truth_x')
 train_label_y = train_dataset.pop('ground_truth_y')
 print(raw_train_dataset.shape)
 print(raw_train_dataset.head)
+print(raw_train_dataset)
 
 train_labels = pd.concat([train_label_x, train_label_y], axis = 1) # Uusi datasetti, missä x ja y samassa...
 
@@ -48,25 +45,25 @@ validation_label_x = validation_dataset.pop('ground_truth_x')
 validation_label_y = validation_dataset.pop('ground_truth_y')
 
 validation_labels = pd.concat([validation_label_x, validation_label_y], axis = 1) # Uusi datasetti, missä x ja y samassa...
-#print(validation_labels.head)
+print(validation_labels.head)
 
 raw_test_dataset = pd.read_csv(test_dataset_path, names = column_names)
 raw_test_dataset['lidar1_ranges'] = raw_test_dataset['lidar1_ranges'].str.replace('(', '', regex = True)
 raw_test_dataset['lidar1_ranges'] = raw_test_dataset['lidar1_ranges'].str.replace(')', '', regex = True)
 raw_test_dataset = pd.concat([raw_test_dataset['yaw_radians'], 
-                                    raw_test_dataset['lidar1_ranges'].str.split(',').apply(pd.Series).astype(float), 
-                                    raw_test_dataset['ground_truth_x'], 
-                                    raw_test_dataset['ground_truth_y']], 
-                                    axis = 1)
+                              raw_test_dataset['lidar1_ranges'].str.split(',').apply(pd.Series).astype(float), 
+                              raw_test_dataset['ground_truth_x'], 
+                              raw_test_dataset['ground_truth_y']], 
+                              axis = 1)
 print(raw_test_dataset)
 test_dataset = raw_test_dataset.copy()
 test_label_x = test_dataset.pop('ground_truth_x')
 test_label_y = test_dataset.pop('ground_truth_y')
 
 test_labels = pd.concat([test_label_x, test_label_y], axis = 1) # Uusi datasetti, missä x ja y samassa...
-#print(test_labels.head)
+print(test_labels.head)
 
-#print ("arvo: ", len(train_dataset.keys()))
+print ("arvo: ", len(train_dataset.keys()))
 
 def build_model():
     model = keras.Sequential([
