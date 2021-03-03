@@ -25,6 +25,8 @@ raw_train_dataset = pd.concat([raw_train_dataset['yaw_radians'],
 train_dataset = raw_train_dataset.copy() # Jätetään "raaka datasetti" erilleen.... Jos sitä pitää muokata tms?
 train_label_x = train_dataset.pop('ground_truth_x')
 train_label_y = train_dataset.pop('ground_truth_y')
+print(train_label_x)
+print(train_label_y)
 print(raw_train_dataset.shape)
 print(raw_train_dataset.head)
 print(raw_train_dataset)
@@ -43,6 +45,8 @@ print(raw_validation_dataset)
 validation_dataset = raw_validation_dataset.copy()
 validation_label_x = validation_dataset.pop('ground_truth_x')
 validation_label_y = validation_dataset.pop('ground_truth_y')
+print(train_label_x)
+print(train_label_y)
 
 validation_labels = pd.concat([validation_label_x, validation_label_y], axis = 1) # Uusi datasetti, missä x ja y samassa...
 print(validation_labels.head)
@@ -59,6 +63,8 @@ print(raw_test_dataset)
 test_dataset = raw_test_dataset.copy()
 test_label_x = test_dataset.pop('ground_truth_x')
 test_label_y = test_dataset.pop('ground_truth_y')
+print(train_label_x)
+print(train_label_y)
 
 test_labels = pd.concat([test_label_x, test_label_y], axis = 1) # Uusi datasetti, missä x ja y samassa...
 print(test_labels.head)
@@ -67,9 +73,10 @@ print ("arvo: ", len(train_dataset.keys()))
 
 def build_model():
     model = keras.Sequential([
-        layers.Dense(64, activation = "relu", input_shape = [len(train_dataset.keys())], name = "layer1"),    # Neuronien määrä ja neuroverkon muoto suoraan datasetin määrästä?
-        layers.Dense(64, activation = "relu", name = "layer2"),
-        layers.Dense(2, activation = "relu", name = "layer3")
+        layers.Dense(256, activation = "relu", input_shape = [len(train_dataset.keys())], name = "layer1"),    # Neuronien määrä ja neuroverkon muoto suoraan datasetin määrästä?
+        layers.Dense(128, activation = "relu", name = "layer2"),
+        layers.Dense(64, activation = "relu", name = "layer3"),
+        layers.Dense(2, activation = "relu", name = "layer4")
     ])
 
     optimizer = tf.keras.optimizers.RMSprop(0.001) # Learning rate 0.001?
