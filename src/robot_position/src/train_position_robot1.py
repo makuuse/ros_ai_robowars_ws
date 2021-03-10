@@ -30,7 +30,8 @@ validation_label_x = validation_dataset.pop('ground_truth_x')
 validation_label_y = validation_dataset.pop('ground_truth_y')
 
 validation_labels = pd.concat([validation_label_x, validation_label_y], axis = 1) # Uusi datasetti, missä x ja y samassa...
-#print(validation_labels.head)
+print(validation_labels)
+
 
 raw_test_dataset = pd.read_csv(test_dataset_path, names = column_names)
 test_dataset = raw_test_dataset.copy()

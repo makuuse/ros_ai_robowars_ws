@@ -3,6 +3,7 @@
 import rospy, message_filters
 from nav_msgs.msg import Odometry
 from sensor_msgs.msg import Range
+from geometry_msgs.msg import Pose
 import angles
 from tf.transformations import euler_from_quaternion
 import numpy as np
@@ -35,11 +36,13 @@ class Robot_position:
                                                                 queue_size = 1, 
                                                                 slop = 0.9,
                                                                 allow_headerless = True)
-        self.subs.registerCallback(self.sensor_cb)
-        self.predict_data = np.zeros((1,7))
         self.model = keras.models.load_model("/home/maku/ros_ai_robowars_ws/src/robot_position/src/saved_model/robot1_model70epochs")
+        self.predict_data = np.zeros((1,7))
+        self.predict_pose_pusblisher = rospy.Publisher('robot1/predicted_pose', Pose, queue_size = 1)
+        self.subs.registerCallback(self.sensor_cb)
 
     def sensor_cb(self, us1_sub, us2_sub, us3_sub, us4_sub, us5_sub, us6_sub, odom_sub):
+
         orientation_in_quaternions = (
             odom_sub.pose.pose.orientation.x, 
             odom_sub.pose.pose.orientation.y, 
@@ -54,7 +57,7 @@ class Robot_position:
         ground_truth_x = odom_sub.pose.pose.position.x 
         ground_truth_y = odom_sub.pose.pose.position.y 
 
-        self.predict_data[0][0] = yaw
+        self.predict_data[0][0] = yaw_radians
         self.predict_data[0][1] = us1_sub.range
         self.predict_data[0][2] = us2_sub.range
         self.predict_data[0][3] = us3_sub.range
@@ -62,9 +65,19 @@ class Robot_position:
         self.predict_data[0][5] = us5_sub.range
         self.predict_data[0][6] = us6_sub.range
 
-        test_predictions = model.predict(predict_data)
+        test_predictions = self.model.predict(self.predict_data)
         print("predictions: " + str(test_predictions[0][0]) + " " + str(test_predictions[0][1]))
         print("ground truth x:" + str(ground_truth_x) + " ground truth y:" + str(ground_truth_y))
+
+        p_msg = Pose()
+        p_msg.position.x = test_predictions[0][0]
+        p_msg.position.y = test_predictions[0][1]
+        p_msg.position.z = 0
+        p_msg.orientation.x = 0
+        p_msg.orientation.y = 0
+        p_msg.orientation.z = 0
+        p_msg.orientation.w = 0
+        self.predict_pose_pusblisher.publish(p_msg)
 
 if __name__ == '__main__':
     print("start")

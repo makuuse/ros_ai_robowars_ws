@@ -13,6 +13,8 @@
   <include file="$(find robotti_1)/launch/spawn_robo1.launch">
   </include>
 
+<!--
   <node type="predict_position.py" pkg="robot_position" name="robot1_predict_position" output="screen" />
+-->
 
 </launch>
